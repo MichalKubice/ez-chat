@@ -16,14 +16,18 @@ var UserSchema = new mongoose.Schema({
       validator: validator.isEmail,
       message: '{VALUE} is not valid.'
     }
-  }, 
+  },
   name: {
     type: String,
     minglenght: 1,
     trim: true,
     required: true
   },
-  password: {
+  rooms:
+    [{
+      type: mongoose.Schema.Types.ObjectId
+    }],
+   password: {
     type: String,
     required: true,
     minglenght: 6,
@@ -46,7 +50,7 @@ UserSchema.methods.toJSON = function() {
 var user = this;
 var userObject = user.toObject();
 
-return _.pick(userObject,["_id","email","name"]);
+return _.pick(userObject,["_id","email","name", "rooms"]);
 };
 
 

@@ -52,6 +52,35 @@ app.delete('/users/me/token', authenticate, (req,res) => {
     res.status(400).send();
   });
 });
+// CREATE ROOM
+
+app.post('/rooms', authenticate, (req,res) => {
+  var body = req.body;
+  var room = new Room({
+    name: body.name,
+    creator: req.user._id,
+    participants: req.user._id
+  });
+  room.save()
+  .then((room) => {
+    res.status(200).send(room);
+    var user = req.user;
+    user.rooms = user.rooms.concat([room]);
+    user.save()
+    .then((req,res)=>{
+      res.status(200);
+    })
+    .catch((e) => {
+      res.status(404).send();
+    })
+  })
+  .catch((e) => {
+    res.status(400).send();
+    console.log("Room already exists")
+  });
+
+
+});
 
 app.get("/users/me", authenticate, (req,res) => {
   res.send(req.user);
