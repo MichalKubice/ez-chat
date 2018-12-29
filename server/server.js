@@ -28,6 +28,7 @@ app.post('/users', (req, res) => {
   });
 });
 
+// LOGIN
 
 app.post('/users/login', (req,res) => {
   var body = _.pick(req.body, ['email','password']);
@@ -52,13 +53,16 @@ app.delete('/users/me/token', authenticate, (req,res) => {
     res.status(400).send();
   });
 });
-// CREATE ROOM
+
+
+// CREATE ROOM INTO DB
 
 app.post('/rooms', authenticate, (req,res) => {
   var body = req.body;
   var room = new Room({
     name: body.name,
     creator: req.user._id,
+    password: req.body.password,
     participants: req.user._id
   });
   room.save()
@@ -78,8 +82,29 @@ app.post('/rooms', authenticate, (req,res) => {
     res.status(400).send();
     console.log("Room already exists")
   });
+});
 
+// FIND ROOM BY ID WITH PASSWORD -- ?JOIN ROOM
 
+app.get('/rooms/:id', authenticate, (req,res) => {
+  var id = req.params.id;
+  var body = _.pick(req.body,["password"]);
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+  Room.findOne({
+    _id:id
+  }).then((room) => {
+    if (room.password !== body.password) {
+      res.status(401).send();
+    }
+    if (!room) {
+      res.status(404).send();
+    }
+    res.send(room).status(200);
+  }).catch((e) => {
+    res.status(400);
+  });
 });
 
 app.get("/users/me", authenticate, (req,res) => {

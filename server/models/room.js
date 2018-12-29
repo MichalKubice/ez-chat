@@ -7,7 +7,8 @@ var RoomSchema = new mongoose.Schema({
         minlength: 3
     },
     password: {
-        type: String
+        type: String,
+        minlength: 3
     },
     creator: {
         type: mongoose.Schema.Types.ObjectId
