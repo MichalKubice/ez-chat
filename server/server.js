@@ -101,12 +101,28 @@ app.get('/rooms/:id', authenticate, (req,res) => {
     if (!room) {
       res.status(404).send();
     }
+
     res.send(room).status(200);
   }).catch((e) => {
     res.status(400);
   });
 });
+//PUT 
+// JOIN ROOM 
+// TODO : SAVE IT TO USER ROOMS 
+app.put('/rooms/:id', authenticate, (req,res) => {
+  var id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+  Room.findOneAndUpdate({_id:id, password:req.body.password},{ $addToSet: { participants: req.user._id } }).then((room) => {
+    return res.send(room).status(200)
+  }).catch((err) => {
+    res.send().status(401)
+  })
+});
 
+//----
 app.get("/users/me", authenticate, (req,res) => {
   res.send(req.user);
 });
