@@ -122,12 +122,12 @@ app.put('/rooms/:id', authenticate, (req,res) => {
   }).catch((e) => {
     console.log("fail");
   });
-  Room.findOneAndUpdate({_id:id, password:req.body.password},{ $addToSet: { participants: req.user._id } }).then((room) => {
+  Room.findOneAndUpdate({_id:id, password:req.body.password},{ $addToSet: { participants: req.user._id }}, {new:true}).then((room) => {
     if (room) {
       res.send(room).status(200);
     }
     else {
-      res.status(401).send();
+      res.status(401).send("wrong password");
     }
 
 
@@ -147,26 +147,27 @@ app.get("/rooms", authenticate, (req,res) => {
 // SEND MESSAGE
 app.post("/reply/:id", authenticate, (req,res) => {
   const id = req.params.id;
-  var id_to_found = req.user._id;
-  if (!ObjectID.isValid(id)) {
-    return res.status(404).send();
-  }
   Room.findOne({
-    _id:id
-  }).then((room)=>{
+    _id:id,
+    participants: req.user._id
+  }).then((room)=> {
+    if (room) {
+
+    
     const message = new Message({
       conversationId: id,
       body: req.body.body,
       author: req.user._id
     });
-    if (1 === 1) {
+    
       message.save().then((mess) => {
       res.send(mess).status(200);
     }).catch((e) => {
       res.send().status(404);
-    })} else {
-      res.status(401).send();
-    }
+    })
+  } else {
+    return res.status(401).send("you are not in this room");
+  }
   }).catch((e)=>{
     res.status(404).send();
   });
@@ -179,8 +180,12 @@ app.get("/:id", authenticate, (req,res) => {
     return res.status(404).send();
   }
   Room.findOne({
-    _id:id
+    _id:id,
+    participants: req.user._id
   }).then((room) => {
+    if(room){
+
+    
     Message.find({
       conversationId:id
     }).then((messages) => {
@@ -195,7 +200,9 @@ app.get("/:id", authenticate, (req,res) => {
       res.send(mess).status(200);
     }).catch((e) => {
       res.send().status(400);
-    })
+    })} else {
+      res.status(401).send("Ur not in this room");
+    }
   }).catch((e)=>{
     res.send().status(404);
   })

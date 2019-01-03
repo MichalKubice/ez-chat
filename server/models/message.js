@@ -17,7 +17,7 @@ var MessageSchema = new mongoose.Schema({
 {
   timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
 });
-
+  
   
 var Message = mongoose.model("Message", MessageSchema);
 module.exports = {Message};
