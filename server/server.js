@@ -109,16 +109,95 @@ app.get('/rooms/:id', authenticate, (req,res) => {
 });
 //PUT 
 // JOIN ROOM 
-// TODO : SAVE IT TO USER ROOMS 
 app.put('/rooms/:id', authenticate, (req,res) => {
   var id = req.params.id;
+  var user = req.user;
+
+  
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
   }
+  User.findOneAndUpdate({_id: req.user._id}, { $addToSet: { rooms: id }}).then((user) => {
+    console.log("succes");
+  }).catch((e) => {
+    console.log("fail");
+  });
   Room.findOneAndUpdate({_id:id, password:req.body.password},{ $addToSet: { participants: req.user._id } }).then((room) => {
-    return res.send(room).status(200)
+    if (room) {
+      res.send(room).status(200);
+    }
+    else {
+      res.status(401).send();
+    }
+
+
   }).catch((err) => {
     res.send().status(401)
+  })
+});
+//GET USER ROOMS
+app.get("/rooms", authenticate, (req,res) => {
+  Room.getRoom(req.user._id).then((rooms) => {
+    res.status(200).send(rooms);
+  }).catch((e) => {
+    res.status(404).send();
+  })
+
+});
+// SEND MESSAGE
+app.post("/reply/:id", authenticate, (req,res) => {
+  const id = req.params.id;
+  var id_to_found = req.user._id;
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+  Room.findOne({
+    _id:id
+  }).then((room)=>{
+    const message = new Message({
+      conversationId: id,
+      body: req.body.body,
+      author: req.user._id
+    });
+    if (1 === 1) {
+      message.save().then((mess) => {
+      res.send(mess).status(200);
+    }).catch((e) => {
+      res.send().status(404);
+    })} else {
+      res.status(401).send();
+    }
+  }).catch((e)=>{
+    res.status(404).send();
+  });
+});
+
+//GET ROOM MESSAGES
+app.get("/:id", authenticate, (req,res) => {
+  const id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+  Room.findOne({
+    _id:id
+  }).then((room) => {
+    Message.find({
+      conversationId:id
+    }).then((messages) => {
+
+      var mess = _.map(messages, function(currentObject) {
+        return _.pick(currentObject, "body", "author","createdAt");
+    });
+
+
+
+
+      res.send(mess).status(200);
+    }).catch((e) => {
+      res.send().status(400);
+    })
+  }).catch((e)=>{
+    res.send().status(404);
   })
 });
 
@@ -128,3 +207,28 @@ app.get("/users/me", authenticate, (req,res) => {
 });
 
 app.listen(port, () => console.log(`Server is now listening on ${port}`));
+
+//1. LOG IN - create token and find req.user.rooms in DB and show them
+//2. Create room - create room into DB, adds user.id to room.participants and room.id to user.rooms
+//3. Join room - 
+//4. Show room - find messages by room.id in the DB, load them and make socket connetion - make user online
+//5. Send message - socket.io and save it into db.
+
+
+//ROUTES 
+// ROOMS : 
+// CREATE ROOM - POST
+// JOIN ROOM - PUT
+// DELETE ROOM - DELETE
+// LEAVE ROOM - DELETE / PUT
+// LOAD ROOMS - GET
+
+// USER :
+// REGISTER - POST
+// LOGIN - POST
+
+
+
+// MESSAGE : 
+// SEND - POST
+// LOAD - GET

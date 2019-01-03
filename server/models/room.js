@@ -13,8 +13,13 @@ var RoomSchema = new mongoose.Schema({
     creator: {
         type: mongoose.Schema.Types.ObjectId
     },
-    participants: [{ type: mongoose.Schema.Types.ObjectId }]
+    participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User"}]
 });
+RoomSchema.statics.getRoom = function(userid) {
+    var room = this;
+    return Room.find({"participants" : userid});
+};
+
 
 var Room = mongoose.model("Room", RoomSchema);
 module.exports = {Room};

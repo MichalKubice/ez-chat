@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const MessageSchema = new mongoose.Schema({  
+var MessageSchema = new mongoose.Schema({  
   conversationId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true
@@ -18,4 +18,6 @@ const MessageSchema = new mongoose.Schema({
   timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
 });
 
-module.exports = mongoose.model('Message', MessageSchema); 
+  
+var Message = mongoose.model("Message", MessageSchema);
+module.exports = {Message};
