@@ -45,10 +45,10 @@ app.post('/users/login', (req,res) => {
     res.status(404).send();
   });
 });
-
+// LOG OUT
 app.delete('/users/me/token', authenticate, (req,res) => {
   req.user.removeToken(req.token).then(() => {
-    res.status(200).send();
+    res.status(200).send("logged out");
   }, () => {
     res.status(400).send();
   });
@@ -135,6 +135,30 @@ app.put('/rooms/:id', authenticate, (req,res) => {
     res.send().status(401)
   })
 });
+
+// LEAVE ROOM
+
+app.put("/rooms/leave/:id", authenticate, (req,res) => {
+  var id = req.params.id;
+  var userId = req.user._id;
+  console.log(userId)
+
+  Room.findOneAndUpdate({
+    _id:id
+  },{
+    $pull: {
+      participants: userId
+    },
+  }, {
+    new: true
+  }).then((room) => {
+    res.send(room).status(200);
+  }).catch((e) => {
+    res.send(e).status(404);
+  })
+});
+
+
 //GET USER ROOMS
 app.get("/rooms", authenticate, (req,res) => {
   Room.getRoom(req.user._id).then((rooms) => {
