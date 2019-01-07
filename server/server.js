@@ -1,18 +1,34 @@
 const express = require("express");
 const {mongoose} = require("./db/mongoose");
 const {ObjectID} = require("mongodb");
-
+const _ = require("lodash");
+const path = require("path");
+const http = require("http");
+const socketIO = require("socket.io")
 const {authenticate} = require("./middleware/authenticate")
 const {User} = require("./models/user");
 const {Room} = require("./models/room");
 const {Message} = require("./models/message");
 const bodyParser = require("body-parser");
-const _ = require("lodash");
+
 var app = express();
+var server = http.createServer(app);
 var port = process.env.PORT || 3000;
+const publicPath = path.join(__dirname,"../public");
+var io = socketIO(server);
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
 app.use(bodyParser.json());
+app.use(express.static(publicPath));
 
 // SAVE USER INTO DB
+
+io.on("connection",(socket) => {
+  console.log("Connected");
+});
+
 app.post('/users', (req, res) => {
   const body = _.pick(req.body, ['email', 'password',"name"]);
   const user = new User(body);
@@ -27,7 +43,6 @@ app.post('/users', (req, res) => {
 
   });
 });
-
 // LOGIN
 
 app.post('/users/login', (req,res) => {
@@ -46,6 +61,7 @@ app.post('/users/login', (req,res) => {
   });
 });
 // LOG OUT
+
 app.delete('/users/me/token', authenticate, (req,res) => {
   req.user.removeToken(req.token).then(() => {
     res.status(200).send("logged out");
@@ -53,8 +69,6 @@ app.delete('/users/me/token', authenticate, (req,res) => {
     res.status(400).send();
   });
 });
-
-
 // CREATE ROOM INTO DB
 
 app.post('/rooms', authenticate, (req,res) => {
@@ -68,15 +82,6 @@ app.post('/rooms', authenticate, (req,res) => {
   room.save()
   .then((room) => {
     res.status(200).send(room);
-    var user = req.user;
-    user.rooms = user.rooms.concat([room]);
-    user.save()
-    .then((req,res)=>{
-      res.status(200);
-    })
-    .catch((e) => {
-      res.status(404).send();
-    })
   })
   .catch((e) => {
     res.status(400).send();
@@ -117,11 +122,6 @@ app.put('/rooms/:id', authenticate, (req,res) => {
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
   }
-  User.findOneAndUpdate({_id: req.user._id}, { $addToSet: { rooms: id }}).then((user) => {
-    console.log("succes");
-  }).catch((e) => {
-    console.log("fail");
-  });
   Room.findOneAndUpdate({_id:id, password:req.body.password},{ $addToSet: { participants: req.user._id }}, {new:true}).then((room) => {
     if (room) {
       res.send(room).status(200);
@@ -138,13 +138,14 @@ app.put('/rooms/:id', authenticate, (req,res) => {
 
 // LEAVE ROOM
 
-app.put("/rooms/leave/:id", authenticate, (req,res) => {
+app.delete("/rooms/:id", authenticate, (req,res) => {
   var id = req.params.id;
   var userId = req.user._id;
   console.log(userId)
 
   Room.findOneAndUpdate({
-    _id:id
+    _id:id,
+    participants: userId
   },{
     $pull: {
       participants: userId
@@ -152,12 +153,15 @@ app.put("/rooms/leave/:id", authenticate, (req,res) => {
   }, {
     new: true
   }).then((room) => {
-    res.send(room).status(200);
+    if(room) {
+      res.send(room).status(200);
+    } else {
+      res.status(401).send("Ur already not in this room");
+    } 
   }).catch((e) => {
     res.send(e).status(404);
   })
 });
-
 
 //GET USER ROOMS
 app.get("/rooms", authenticate, (req,res) => {
@@ -198,6 +202,7 @@ app.post("/reply/:id", authenticate, (req,res) => {
 });
 
 //GET ROOM MESSAGES
+
 app.get("/:id", authenticate, (req,res) => {
   const id = req.params.id;
   if (!ObjectID.isValid(id)) {
@@ -237,11 +242,11 @@ app.get("/users/me", authenticate, (req,res) => {
   res.send(req.user);
 });
 
-app.listen(port, () => console.log(`Server is now listening on ${port}`));
+server.listen(port, () => console.log(`Server is now listening on ${port}`));
 
 //1. LOG IN - create token and find req.user.rooms in DB and show them
 //2. Create room - create room into DB, adds user.id to room.participants and room.id to user.rooms
-//3. Join room - 
+//3. Join room - Done
 //4. Show room - find messages by room.id in the DB, load them and make socket connetion - make user online
 //5. Send message - socket.io and save it into db.
 
