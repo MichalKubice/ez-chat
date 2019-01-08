@@ -23,11 +23,6 @@ var UserSchema = new mongoose.Schema({
     trim: true,
     required: true
   },
-  rooms:
-    [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Room"
-    }],
    password: {
     type: String,
     required: true,
@@ -51,7 +46,7 @@ UserSchema.methods.toJSON = function() {
 var user = this;
 var userObject = user.toObject();
 
-return _.pick(userObject,["_id","email","name", "rooms"]);
+return _.pick(userObject,["_id","email","name"]);
 };
 
 
