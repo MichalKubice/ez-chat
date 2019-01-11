@@ -2,9 +2,9 @@ import React from 'react'
 
 export default () => {
   return (
-      <footer className="bg-dark text-white mt-5 p-4 text-center">
+      <footer className="bg-dark text-white mt-5 p-2 text-center">
 
-      Coypyright &copy; {new Date().getFullYear()} Ez.Chat
+       {new Date().getFullYear()} Ez.Chat
       </footer> 
   )
 }
