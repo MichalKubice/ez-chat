@@ -15,7 +15,7 @@ router.post('/register', (req, res) => {
   if(!isValid) {
     return res.status(400).json(errors);
   }
-  User.findOne({email: req.body.email}).then((user) => {
+  User.findOne({email: req.body.email}).then((user) => {
     if(user) {
       errors.email = "Email already exists"
       return res.status(400).json(errors);
@@ -25,15 +25,11 @@ router.post('/register', (req, res) => {
         email: req.body.email,
         password: req.body.password
       });
-      user.generateAuthToken()
-      .then((result) => {
-          user.tokens = user.tokens.concat([result]);
     
           user.save()
-          .then ((user) => res.header('x-auth', result.token).json(user))
+          .then ((user) => res.json(user))
           .catch(err => res.status(400).send(err));
     
-      });
     }
   }).catch((e)=> {
     res.send(e);
@@ -70,8 +66,8 @@ router.delete('/me/token', authenticate, (req,res) => {
   });
 });
 //---- GET USER
-router.get("/users/me", authenticate, (req,res) => {
-  res.send(req.user);
+router.get("/me", authenticate, (req,res) => {
+  res.send(req.user).status(200);
 });
 
   module.exports = router;
