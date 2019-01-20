@@ -7,13 +7,18 @@ const {ObjectID} = require("mongodb");
 const {Room} = require("../models/room");
 const {Message} = require("../models/message");
 const {authenticate} = require("../middleware/authenticate");
-
+const validateRoomInput = require("../validation/rooms");
+const validateJoinInput = require("../validation/join");
 // CREATE ROOM INTO DB
 
 router.post('/', authenticate, (req,res) => {
+  const { errors, isValid } = validateRoomInput(req.body);
+  if(!isValid) {
+    return res.status(400).json(errors);
+  }
     var body = req.body;
     var room = new Room({
-      name: body.name,
+      name: body.roomName,
       creator: req.user._id,
       password: req.body.password,
       participants: req.user._id
@@ -24,7 +29,7 @@ router.post('/', authenticate, (req,res) => {
     })
     .catch((e) => {
       res.status(400).send();
-      console.log("Room already exists")
+      errors.roomName = "Room already exists"
     });
   });
 
@@ -53,25 +58,32 @@ router.get('/get/:id', authenticate, (req,res) => {
   });
   
 // JOIN ROOM 
-router.put('/:id', authenticate, (req,res) => {
-    var id = req.params.id;
+router.put('/join', authenticate, (req,res) => {
+  const { errors, isValid } = validateJoinInput(req.body);
+  if(!isValid) {
+    return res.status(400).json(errors);
+  }
+    var id = req.body.id;
     var user = req.user;
   
-    
     if (!ObjectID.isValid(id)) {
-      return res.status(404).send();
+      errors.id = "wrong id";
+      res.status(404).send();
+      
     }
     Room.findOneAndUpdate({_id:id, password:req.body.password},{ $addToSet: { participants: req.user._id }}, {new:true}).then((room) => {
       if (room) {
-        res.send(room).status(200);
+        res.json(room).status(200);
       } 
       else {
         res.status(401).send("wrong password");
+        errors.password = "Room already exists"
       }
   
   
     }).catch((err) => {
       res.send().status(401)
+      errors.password = "Room already exists"
     })
   });
 

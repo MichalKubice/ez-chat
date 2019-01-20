@@ -5,4 +5,6 @@ export const PROFILE_LOADING = "PROFILE_LOADING";
 export const PROFILE_NOT_FOUND = "PROFILE_NOT_FOUND";
 export const CLEAR_CURRENT_PROFILE = "CLEAR_CURRENT_PROFILE";
 export const GET_PROFILES = "GET_PROFILES";
-
+export const GET_ROOMS = "GET_ROOMS";
+export const CREATE_ROOM = "CREATE_ROOM";
+export const JOIN_ROOM = "JOIN_ROOM";

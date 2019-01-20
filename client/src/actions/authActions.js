@@ -1,8 +1,7 @@
-import { GET_ERRORS } from "./types";
+ import { GET_ERRORS } from "./types";
 import { SET_CURRENT_USER } from "./types";
 import axios from "axios";
 import setAuthToken from "../utils/setAuthToken";
-import jwt_decode from "jwt-decode";
 
 export const registerUser = (userData, history) =>  dispatch => {
     axios
@@ -19,6 +18,12 @@ export const registerUser = (userData, history) =>  dispatch => {
             const token = res.headers["x-auth"];
             localStorage.setItem("jwtToken", token);
             setAuthToken(token);
+            axios.get("/api/users/me").then((res) => {
+                dispatch(setCurrentUser(res.data));
+    
+            }).catch((e) => {
+                console.log(e)
+            })
         }).catch(err => {
             dispatch({
                 type: GET_ERRORS,
@@ -26,12 +31,6 @@ export const registerUser = (userData, history) =>  dispatch => {
             })
 
         });
-        axios.get("/api/users/me").then((res) => {
-            dispatch(setCurrentUser(res.data));
-
-        }).catch((e) => {
-            console.log(e)
-        })
     };
 
     export const setCurrentUser = (decoded) => {
@@ -46,7 +45,6 @@ export const registerUser = (userData, history) =>  dispatch => {
             localStorage.removeItem("jwtToken");
             setAuthToken(false);
             dispatch(setCurrentUser({}));
-            res.status(200)
         }).catch((err)=> {
             console.log(err);
         })

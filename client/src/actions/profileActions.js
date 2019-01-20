@@ -6,12 +6,12 @@ export const getCurrentProfile = () => dispatch => {
     axios.get("/api/users/me").then((res) => {
 dispatch({
     type: GET_PROFILE,
-    payload: res.data
+    payload: res
 })
     }).catch((e) => {
         dispatch({
             type: GET_PROFILE,
-            payload: {}
+            payload: null
         })
     });
 }

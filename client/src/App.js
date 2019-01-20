@@ -1,26 +1,26 @@
 import './App.css';
 import React, { Component } from 'react';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import { Provider } from "react-redux";
-import jwt_decode from "jwt-decode";
-import setAuthToken from "./utils/setAuthToken";
-import {setCurrentUser} from "./actions/authActions";
 import store from "./store";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import Landing from "./components/layout/Landing";
 
+import PrivateRoute from "./components/common/PrivateRoute";
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import Dashboard from "./components/dashboard/Dashboard";
+import createRoom from "./components/rooms/createRoom";
+import getRooms from './components/rooms/getRooms';
+import joinRoom from './components/rooms/joinRoom';
 
-
-if(localStorage.jwtToken) {
- setAuthToken(localStorage);
- const decoded = jwt_decode(localStorage.jwtToken);
- store.dispatch(setCurrentUser(decoded));
+//if(localStorage.jwtToken) {
+// setAuthToken(localStorage);
+ //const decoded = jwt_decode(localStorage.jwtToken);
+ //store.dispatch(setCurrentUser(decoded));
  // TRY this.props.isAuthenticated(true);
-}
+//}
 
 class App extends Component {
   render() {
@@ -33,7 +33,12 @@ class App extends Component {
       <div className="container">
       <Route exact path="/register" component={Register}/>
       <Route exact path="/login" component={Login}/>
-      <Route exact path="/dashboard" component={Dashboard}/>
+      <Switch>
+      <PrivateRoute exact path="/dashboard" component={Dashboard}/>
+      <PrivateRoute exact path="/create-room" component={createRoom}/>
+      <PrivateRoute exact path="/get-rooms" component={getRooms}/>
+      <PrivateRoute exact path="/join-room" component={joinRoom}/>
+      </Switch>
       </div>
       <Footer />
       </div>

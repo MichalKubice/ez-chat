@@ -1,34 +1,41 @@
 import React, { Component } from 'react';
- import PropTypes from "prop-types";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getCurrentProfile } from "../../actions/profileActions"
-import { setCurrentUser } from "../../actions/authActions"
+import { Link } from "react-router-dom";
+import { showRoom } from "../../actions/roomActions";
 
 
 class Dashboard extends Component {
   componentDidMount() {
     this.props.getCurrentProfile();
+    this.props.showRoom();
   }
   render() {
     const { user } = this.props.auth;
-    const { profile, loading } = this.props.profile
-
+    const { loading } = this.props.profile
     let dashboardContent;
-    if(profile === null || loading) {
+    if(loading) {
       dashboardContent = "loading"
     } else {
-      dashboardContent = "Welcome!"
+      dashboardContent = <div><h1>Welcome {user.name}!</h1>
+      <div className="m-5">
+      <p><Link to="/get-rooms" className="btn btn-lg btn-info btn-block">Rooms</Link></p>
+      <p><Link to="/create-room" className="btn btn-lg btn-info btn-block">Create New Room!</Link></p>
+      <p><Link to="/join-room" className="btn btn-lg btn-info btn-block ">Join room!</Link></p>
+      </div>
+      </div>
     }
     return (
       <div className="dashboard">
-        <div className="containter">
-        <div className="row">
-        <div className="col-md-4"> 
-        <h1 className="display-3"> { dashboardContent} </h1>
-        </div>
-        
-        </div>
-        </div>
+          <div className="container">
+            <div className="row">
+              <div className="col-md-12 text-center">
+                <div className="lead"> {dashboardContent} </div>
+                <hr />
+              </div>
+            </div>
+          </div>
       </div>
     )
   }
@@ -37,7 +44,8 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   getCurrentProfile: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  profile: PropTypes.object.isRequired
+  profile: PropTypes.object.isRequired,
+  showRoom: PropTypes.func.isRequired
 } 
 
 const mapStateToProps = (state) => ({
@@ -46,4 +54,4 @@ const mapStateToProps = (state) => ({
 })
 
 
-export default connect(mapStateToProps, { getCurrentProfile })(Dashboard);
+export default connect(mapStateToProps, { getCurrentProfile, showRoom})(Dashboard);
