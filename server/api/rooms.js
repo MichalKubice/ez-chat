@@ -67,7 +67,7 @@ router.put('/join', authenticate, (req,res) => {
     var user = req.user;
   
     if (!ObjectID.isValid(id)) {
-      errors.id = "wrong id";
+      errors.roomName = "wrong id";
       res.status(404).send();
       
     }
@@ -118,7 +118,7 @@ router.delete("/:id", authenticate, (req,res) => {
 //GET USER ROOMS
 router.get("/", authenticate, (req,res) => {
     Room.getRoom(req.user._id).then((rooms) => {
-      res.status(200).send(rooms);
+      res.status(200).json(rooms);
     }).catch((e) => {
       res.status(404).send();
     })

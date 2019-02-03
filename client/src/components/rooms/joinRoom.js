@@ -40,6 +40,7 @@ class joinRoom extends Component {
             <div className="row">
             <div className="col-md-5 m-auto">
             JOIN
+            
           <form onSubmit={this.onSubmit}>
             <TextFieldGroup 
             placeholder="room name"

@@ -14,6 +14,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import createRoom from "./components/rooms/createRoom";
 import getRooms from './components/rooms/getRooms';
 import joinRoom from './components/rooms/joinRoom';
+import Room from "./components/rooms/Room/Room";
 
 //if(localStorage.jwtToken) {
 // setAuthToken(localStorage);
@@ -38,6 +39,7 @@ class App extends Component {
       <PrivateRoute exact path="/create-room" component={createRoom}/>
       <PrivateRoute exact path="/get-rooms" component={getRooms}/>
       <PrivateRoute exact path="/join-room" component={joinRoom}/>
+      <PrivateRoute exact path="/profile/:id" component={Room}/>
       </Switch>
       </div>
       <Footer />

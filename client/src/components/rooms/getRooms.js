@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from "react-redux";
 import propTypes from "prop-types";
 import { showRoom } from "../../actions/roomActions";
-
+import RoomItem from "./RoomItem"
 
 class getRooms extends Component {
     constructor(props){
@@ -12,7 +12,17 @@ class getRooms extends Component {
         }
     }
   render() {
-      const { rooms } = this.props.rooms
+      const { rooms } = this.props.rooms;
+      let roomItems;
+      if(rooms.length > 0) {
+        roomItems = rooms.map(room => (
+          <RoomItem key={room._id} rooms={room}/> 
+        ))
+
+      } else {
+        roomItems = "No rooms."
+      }
+      
       // console.log(JSON.stringify(rooms))
       //const updateRooms = rooms.map((d) => <li {d.name}>{d.name}</li>);
       //console.log(updateRooms)
@@ -21,12 +31,9 @@ class getRooms extends Component {
 <div className="dashboard">
           <div className="container">
             <div className="row">
-            <div className="col-md-5 m-auto">
-            ROOMS:
-            {JSON.stringify({rooms})}
-            
-            
-                <hr />
+            <div className="col-md-12 text-center">
+            <h1 className="display-4 text-center">Rooms</h1>
+            {roomItems}
               </div>
             </div>
           </div>

@@ -8,3 +8,4 @@ export const GET_PROFILES = "GET_PROFILES";
 export const GET_ROOMS = "GET_ROOMS";
 export const CREATE_ROOM = "CREATE_ROOM";
 export const JOIN_ROOM = "JOIN_ROOM";
+export const GET_MESSAGES = "GET_MESSAGES";

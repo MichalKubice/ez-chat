@@ -1,7 +1,8 @@
-import { GET_ROOMS } from "../actions/types";
+import { GET_ROOMS, GET_MESSAGES } from "../actions/types";
 
 const initialState = {
-    rooms: {}
+    rooms: {},
+    messages: {}
 }
 
 export default function(state = initialState, action) {
@@ -10,6 +11,11 @@ export default function(state = initialState, action) {
         return {
             ...state,
             rooms: action.payload
+        }
+        case GET_MESSAGES:
+        return {
+            ...state,
+            messages: action.payload
         }
         default:
         return state
