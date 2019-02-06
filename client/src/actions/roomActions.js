@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_ROOMS, GET_ERRORS, GET_MESSAGES} from "../actions/types";
+import { GET_ROOMS, GET_ERRORS, GET_MESSAGES, SEND_MESSAGE} from "../actions/types";
 
 export const createRooms = (roomData, history) => dispatch => {
     axios.post("/api/rooms", roomData).then((res) => {
@@ -34,8 +34,22 @@ export const getMessages = (id) => dispatch => {
     }).catch((err) => {
         dispatch({
             type: GET_MESSAGES,
-            payload: null
+            payload: {}
         })
+    })
+};
+export const sendMessage = (id,roomData) => dispatch => {
+    axios.post(`/api/rooms/${id}`,roomData).then((res) => {
+        dispatch({
+            type: SEND_MESSAGE,
+            payload: res.data
+        })
+    }).catch((e) => {
+        dispatch({
+            type: SEND_MESSAGE,
+            payload: {}
+        })
+        console.log("something went wrong")
     })
 };
 

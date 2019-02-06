@@ -67,8 +67,8 @@ router.put('/join', authenticate, (req,res) => {
     var user = req.user;
   
     if (!ObjectID.isValid(id)) {
-      errors.roomName = "wrong id";
-      res.status(404).send();
+      errors.id = "wrong id";
+      res.status(404).json(errors);
       
     }
     Room.findOneAndUpdate({_id:id, password:req.body.password},{ $addToSet: { participants: req.user._id }}, {new:true}).then((room) => {
@@ -76,8 +76,8 @@ router.put('/join', authenticate, (req,res) => {
         res.json(room).status(200);
       } 
       else {
-        res.status(401).send("wrong password");
-        errors.password = "Room already exists"
+        errors.id = "Wrong password"
+        return res.status(400).json(errors);
       }
   
   
@@ -154,21 +154,22 @@ router.get("/:id", authenticate, (req,res) => {
     })
   });
   // SEND MESSAGE
-router.post("/reply/:id", authenticate, (req,res) => {
+router.post("/:id", authenticate, (req,res) => {
     const id = req.params.id;
+    if (!ObjectID.isValid(id)) {
+      return res.status(404).send();
+    }
     Room.findOne({
       _id:id,
       participants: req.user._id
+      
     }).then((room)=> {
       if (room) {
-  
-      
       const message = new Message({
         conversationId: id,
         body: req.body.body,
-        author: req.user._id
+        author: req.user.name
       });
-      
         message.save().then((mess) => {
         res.send(mess).status(200);
       }).catch((e) => {

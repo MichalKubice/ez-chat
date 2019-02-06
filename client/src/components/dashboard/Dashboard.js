@@ -20,12 +20,12 @@ class Dashboard extends Component {
     } else {
       dashboardContent = <div><h1>Welcome {user.name}!</h1>
       <div className="m-5">
-      <p><Link to="/get-rooms" className="btn btn-lg btn-info btn-block">My rooms</Link></p>
-      <p><Link to="/create-room" className="btn btn-lg btn-info btn-block">Create new room</Link></p>
-      <p><Link to="/join-room" className="btn btn-lg btn-info btn-block ">Join room</Link></p>
+      <p><Link to="/get-rooms" className="btn btn-lg btn-outline-dark btn-info btn-block">My rooms</Link></p>
+      <p><Link to="/create-room" className="btn btn-lg btn-outline-dark btn-info btn-block">Create new room</Link></p>
+      <p><Link to="/join-room" className="btn btn-lg btn-outline-dark btn-info btn-block ">Join room</Link></p>
       </div>
       </div>
-    }
+    } 
     return (
       <div className="dashboard">
           <div className="container">

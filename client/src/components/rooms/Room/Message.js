@@ -1,11 +1,26 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import PropTypes from "prop-types";
 
-export default class Message extends Component {
+class Message extends Component {
   render() {
+      const { messages } = this.props
     return (
-      <div>
-        
+        <div className="card card-body mb-2 ">
+        <div className="row">
+          <div className="col-md-2">
+          <h5 className="card-title">{messages.author}</h5>
+          {messages.createdAt}
+          </div>
+          <div className="col-md-8">
+            <p className="lead">{messages.body}</p> 
+          </div>
+    
+        </div>
       </div>
     )
   }
 }
+Message.propTypes = {
+    messages: PropTypes.object.isRequired
+}
+export default Message;

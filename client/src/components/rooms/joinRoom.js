@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import propTypes from "prop-types";
 import TextFieldGroup from "../common/TextFieldGroup";
 import {joinRooms} from "../../actions/roomActions";
+import { Link } from "react-router-dom";
 
 
 class joinRoom extends Component {
@@ -39,7 +40,7 @@ class joinRoom extends Component {
           <div className="container">
             <div className="row">
             <div className="col-md-5 m-auto">
-            JOIN
+            <Link to="/dashboard" className="btn btn-light mb-3 float-left">Back</Link>
             
           <form onSubmit={this.onSubmit}>
             <TextFieldGroup 

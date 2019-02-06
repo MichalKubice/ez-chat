@@ -9,3 +9,5 @@ export const GET_ROOMS = "GET_ROOMS";
 export const CREATE_ROOM = "CREATE_ROOM";
 export const JOIN_ROOM = "JOIN_ROOM";
 export const GET_MESSAGES = "GET_MESSAGES";
+export const SEND_MESSAGE = "SEND_MESSAGE";
+export const LEAVE_ROOM = "LEAVE_ROOM";

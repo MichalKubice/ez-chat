@@ -22,6 +22,9 @@ var UserSchema = new mongoose.Schema({
     required: true,
     minglenght: 6,
   },
+  rooms: {
+    type: mongoose.Schema.Types.ObjectId
+  },
   tokens: [{
     access: {
       type: String,
