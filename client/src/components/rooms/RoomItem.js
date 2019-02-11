@@ -8,12 +8,11 @@ class RoomItem extends Component {
       const participants = rooms.participants
       const arr = participants.length
       let act;
-      if (arr == 1) {
+      if (arr === 1) {
         act = "User"
       } else {act = "Users"
 
       };
-      console.log(arr)
     return (
       <div className="card mb-3">
       <div className="row">

@@ -12,6 +12,9 @@ var MessageSchema = new mongoose.Schema({
   author: {
     type: String,
     ref: 'User'
+  },
+  img: {
+    type: String
   }
 },
 {

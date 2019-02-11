@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import propTypes from "prop-types";
-import {getMessages} from "../../../actions/roomActions";
-import UserList from "./UserList";
+import {getMessages} from "../../actions/roomActions";
 import MessageList from "./MessageList"
 import {Link} from "react-router-dom"
-import TextFieldGroup from "../../common/TextFieldGroup";
-import { sendMessage } from "../../../actions/roomActions";
+import TextFieldGroup from "../common/TextFieldGroup";
+import { sendMessage } from "../../actions/roomActions";
+import {getUserList} from "../../actions/roomActions";
 class Room extends Component {
     constructor(props) {
         super(props);
@@ -19,6 +19,7 @@ class Room extends Component {
     componentDidMount() {
         if(this.props.match.params.id) {
             this.props.getMessages(this.props.match.params.id)
+            this.props.getUserList(this.props.match.params.id)
         }
     }
     onChange(e) {
@@ -30,27 +31,31 @@ class Room extends Component {
             body: this.state.body
         }
         this.props.sendMessage(this.props.match.params.id,room);
+        this.props.getMessages(this.props.match.params.id)
         this.setState({body: ""});
     }
   render() {
       const {messages} = this.props.rooms;
+      const {userList} = this.props.rooms;
       let content;
           content = <div className="row">
           
           <div className="col-md-6"> 
           <Link to="/get-rooms" className="btn btn-light mb-3 float-left">Back</Link>
           <Link to="/get-rooms" className="btn btn-light ml-3 float-left">Leave</Link>
-          <p class="col bg-warning ml-3 float-left">ID : {this.props.match.params.id}</p>
-          </div>
+          <p className="col bg-warning ml-3 float-left">ID : {this.props.match.params.id}</p>
+          </div> 
           </div>
       
     return (
       <div className="room">
       <div className="container">
       <div className="row">
+      
       <div className="col-md-12">
+     
       {content}
-      <MessageList messages={messages} />
+      <MessageList messages={messages} userList={userList}/>
       <form onSubmit={this.onSubmit}>
       <TextFieldGroup 
             placeholder="Message"
@@ -59,6 +64,7 @@ class Room extends Component {
             onChange={this.onChange}
             />
             <input type="submit" className="btn btn-info btn-block mt-4" /></form>
+            
       </div>
       </div>
       </div>
@@ -69,10 +75,11 @@ class Room extends Component {
 Room.propTypes = {
     rooms: propTypes.object.isRequired,
     getMessages: propTypes.func.isRequired,
-    sendMessage: propTypes.func.isRequired
+    sendMessage: propTypes.func.isRequired,
+    getUserList: propTypes.func.isRequired
 }
 const mapStateToProps = state => ({
     rooms: state.rooms,
     auth: state.auth
 })
-export default connect(mapStateToProps,{sendMessage,getMessages})(Room);
+export default connect(mapStateToProps,{sendMessage,getMessages,getUserList})(Room);

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_PROFILE, PROFILE_LOADING, CLEAR_CURRENT_PROFILE } from "./types";
+import { GET_PROFILE, PROFILE_LOADING, CLEAR_CURRENT_PROFILE, UPLOAD } from "./types";
 
 export const getCurrentProfile = () => dispatch => {
     dispatch(setProfileLoading());
@@ -16,12 +16,20 @@ dispatch({
     });
 }
 
-
-
 export const setProfileLoading = () => {
     return {
         type: PROFILE_LOADING
     }
+}
+export const uploadImg = (fd) => dispatch => {
+    axios.put("/api/users/img", fd).then((res) => {
+        dispatch({
+            type: UPLOAD,
+            payload: res.data
+        })
+    }).catch((e) => {
+        console.log(e)
+    })
 }
 export const clearCurrentProfile = () => {
     return {

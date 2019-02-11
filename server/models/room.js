@@ -13,6 +13,8 @@ var RoomSchema = new mongoose.Schema({
     creator: {
         type: mongoose.Schema.Types.ObjectId
     },
+    userList: [{ type: String}],
+    
     participants: [{ type: mongoose.Schema.Types.ObjectId}]
 });
 RoomSchema.statics.getRoom = function(userid) {

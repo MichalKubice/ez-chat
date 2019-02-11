@@ -1,13 +1,36 @@
 const express = require("express");
 const router = express.Router();
 const validateLoginInput = require("../validation/login");
-
+const {ObjectID} = require("mongodb");
 const _ = require("lodash");
+const multer = require("multer");
 
 const {User} = require("../models/user");
 const {authenticate} = require("../middleware/authenticate");
 const validateRegisterInput = require("../validation/register");
-
+const storage = multer.diskStorage({
+  destination: function(req,file,cb) {
+    cb(null,"./uploads/");
+  },
+  filename: function(req,file,cb) {
+    cb(null, Date.now() + file.originalname)
+  }
+});
+const fileFilter = (req,file,cb) => {
+  if(file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    cb(null,true)
+  } else {
+    cb(null,false);
+  }
+  
+}
+const upload = multer({
+  storage: storage, 
+  limits: {
+  fileSize: 500 * 500 * 1
+},
+fileFilter: fileFilter
+});
 
 // SAVE USER INTO DB
 router.post('/register', (req, res) => {
@@ -23,7 +46,9 @@ router.post('/register', (req, res) => {
       const user = new User({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        rooms: [],
+        img: "uploads/default.png"
       });
     
           user.save()
@@ -55,7 +80,21 @@ router.post('/login', (req,res) => {
       res.status(404).send(errors);
     });
   });
+  //IMG
 
+  router.put("/img", authenticate, upload.single("img"), (req,res) => {
+    if(req.file){
+
+    
+    User.findOneAndUpdate({_id:req.user._id},{ $set: { img: req.file.path }}, {new:true}).then((user) => {
+      res.send(user)
+    }).catch((err) => {
+      res.status(404).send();
+    })
+  } else {
+    res.status(401).send("No file");
+  }
+  });
   // LOG OUT
 
 router.delete('/me/token', authenticate, (req,res) => {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_ROOMS, GET_ERRORS, GET_MESSAGES, SEND_MESSAGE} from "../actions/types";
+import { GET_ROOMS, GET_ERRORS, GET_MESSAGES, SEND_MESSAGE, GET_USERLIST} from "../actions/types";
 
 export const createRooms = (roomData, history) => dispatch => {
     axios.post("/api/rooms", roomData).then((res) => {
@@ -52,7 +52,19 @@ export const sendMessage = (id,roomData) => dispatch => {
         console.log("something went wrong")
     })
 };
-
+export const getUserList = (id) => dispatch => {
+    axios.get(`/api/rooms/users/${id}`).then((res) => {
+        dispatch({
+            type: GET_USERLIST,
+            payload: res.data
+        })
+    }).catch((e) => {
+        dispatch({
+            type:GET_USERLIST,
+            payload: {}
+        })
+    })
+};
 export const joinRooms = (roomData, history) => dispatch =>  {
     const url = `/api/rooms/join`;
     axios.put(url,roomData).then((res) => {

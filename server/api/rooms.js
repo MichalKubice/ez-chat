@@ -3,7 +3,7 @@ const router = express.Router();
 
 const _ = require("lodash");
 const {ObjectID} = require("mongodb");
-
+const {User} = require("../models/user");
 const {Room} = require("../models/room");
 const {Message} = require("../models/message");
 const {authenticate} = require("../middleware/authenticate");
@@ -21,18 +21,49 @@ router.post('/', authenticate, (req,res) => {
       name: body.roomName,
       creator: req.user._id,
       password: req.body.password,
-      participants: req.user._id
+      participants: req.user._id,
+      userList: req.user.name
     });
     room.save()
     .then((room) => {
       res.status(200).send(room);
+      User.findOneAndUpdate({_id:req.user._id},{ $addToSet: { rooms:  room._id}}, {new:true}).then((room) => {
+        if (room) {
+          res.json(room).status(200);
+        } 
+        else {
+          
+          return res.status(400).json("fuckup");
+        }
+    
+    
+      }).catch((err) => {
+        res.send().status(401)
+        errors.password = "Failed."
+      })
     })
     .catch((e) => {
       res.status(400).send();
       errors.roomName = "Room already exists"
     });
+      
   });
-
+  router.get("/room/:id", authenticate, (req,res) => {
+    let id = req.params.id;
+    Room.findOne({_id: id}).then((room) => {
+      if (!ObjectID.isValid(id)) {
+        res.status(404).send("Bad.");   
+      }
+      if(!room) {
+        res.status(404).json("nothing")
+      } else {
+        res.status(200).json(room.userList);
+      }
+    }).catch((e) => {
+      res.send().status(400);
+    })
+  });
+  
   // FIND ROOM BY ID WITH PASSWORD -- ?JOIN ROOM
 
 router.get('/get/:id', authenticate, (req,res) => {
@@ -71,9 +102,23 @@ router.put('/join', authenticate, (req,res) => {
       res.status(404).json(errors);
       
     }
-    Room.findOneAndUpdate({_id:id, password:req.body.password},{ $addToSet: { participants: req.user._id }}, {new:true}).then((room) => {
+    Room.findOneAndUpdate({_id:id, password:req.body.password},{ $addToSet: { participants: req.user._id, userList: req.user.name }}, {new:true}).then((room) => {
       if (room) {
         res.json(room).status(200);
+        User.findOneAndUpdate({_id:req.user._id},{ $addToSet: { rooms:  room._id}}, {new:true}).then((room) => {
+          if (room) {
+            res.json(room).status(200);
+          } 
+          else {
+            
+            return res.status(400).json("fuckup");
+          }
+      
+      
+        }).catch((err) => {
+          res.send().status(401)
+          errors.password = "Failed."
+        })
       } 
       else {
         errors.id = "Wrong password"
@@ -93,6 +138,7 @@ router.put('/join', authenticate, (req,res) => {
 router.delete("/:id", authenticate, (req,res) => {
     var id = req.params.id;
     var userId = req.user._id;
+    var userName = req.user.name
     console.log(userId)
   
     Room.findOneAndUpdate({
@@ -100,13 +146,29 @@ router.delete("/:id", authenticate, (req,res) => {
       participants: userId
     },{
       $pull: {
-        participants: userId
+        participants: userId,
+        userList: userName
       },
     }, {
       new: true
     }).then((room) => {
       if(room) {
         res.send(room).status(200);
+        User.findOneAndUpdate({_id:req.user._id},{ $pull: { rooms:  room._id}}, {new:true}).then((room) => {
+          if (room) {
+            res.json(room).status(200);
+          } 
+          else {
+            
+            return res.status(400).json("fuckup");
+          }
+      
+      
+        }).catch((err) => {
+          res.send().status(401)
+          errors.password = "Failed."
+        })
+  
       } else {
         res.status(401).send("Ur already not in this room");
       } 
@@ -141,7 +203,7 @@ router.get("/:id", authenticate, (req,res) => {
         conversationId:id
       }).then((messages) => {
         var mess = _.map(messages, function(currentObject) {
-          return _.pick(currentObject, "body", "author","createdAt");
+          return _.pick(currentObject, "body", "author","createdAt", "img");
       });
         res.send(mess).status(200);
       }).catch((e) => {
@@ -153,6 +215,17 @@ router.get("/:id", authenticate, (req,res) => {
       res.send().status(404);
     })
   });
+
+  router.get("/users/:id",(req,res) => {
+    const id = req.params.id;
+    User.find({
+      rooms:id
+    }).then((users) => {
+      res.send(users).status(200);
+    }).catch((e) => {
+      res.send().status(400);
+    })
+  })
   // SEND MESSAGE
 router.post("/:id", authenticate, (req,res) => {
     const id = req.params.id;
@@ -168,7 +241,8 @@ router.post("/:id", authenticate, (req,res) => {
       const message = new Message({
         conversationId: id,
         body: req.body.body,
-        author: req.user.name
+        author: req.user.name,
+        img: req.user.img
       });
         message.save().then((mess) => {
         res.send(mess).status(200);

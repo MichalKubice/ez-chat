@@ -19,6 +19,8 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
+app.use("/profile/uploads", express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 app.use("/api/users", users);
 app.use("/api/rooms", rooms);
 // app.use(express.static(publicPath));

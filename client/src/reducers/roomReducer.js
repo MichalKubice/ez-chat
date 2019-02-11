@@ -1,7 +1,8 @@
-import { GET_ROOMS, GET_MESSAGES, SEND_MESSAGE, LEAVE_ROOM } from "../actions/types";
+import { GET_ROOMS, GET_MESSAGES, SEND_MESSAGE, LEAVE_ROOM, GET_USERLIST } from "../actions/types";
 
 const initialState = {
     rooms: {},
+    userList: {},
     messages: {}
 }
 
@@ -15,6 +16,11 @@ export default function(state = initialState, action) {
         case SEND_MESSAGE:
         return {
             ...state
+        }
+        case GET_USERLIST:
+        return {
+            ...state,
+            userList: action.payload
         }
         case GET_MESSAGES:
         return {

@@ -9,7 +9,7 @@ class Message extends Component {
         <div className="row">
           <div className="col-md-2">
           <h5 className="card-title">{messages.author}</h5>
-          {messages.createdAt}
+          <img className="rounded-circle" src={messages.img} alt="" />
           </div>
           <div className="col-md-8">
             <p className="lead">{messages.body}</p> 

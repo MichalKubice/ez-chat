@@ -23,16 +23,13 @@ class getRooms extends Component {
       } else {
         roomItems = "No rooms."
       }
-      
-      // console.log(JSON.stringify(rooms))
-      //const updateRooms = rooms.map((d) => <li {d.name}>{d.name}</li>);
-      //console.log(updateRooms)
     return (
         
 <div className="dashboard">
           <div className="container">
             <div className="row">
             <div className="col-md-12 text-center">
+            
             <Link to="/dashboard" className="btn btn-light mb-3 float-left">Back</Link>
             <h1 className="display-4 text-center">Rooms</h1>
             {roomItems}

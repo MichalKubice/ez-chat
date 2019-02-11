@@ -21,10 +21,10 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     minglenght: 6,
+  }, img: {
+    type: String
   },
-  rooms: {
-    type: mongoose.Schema.Types.ObjectId
-  },
+  rooms: [{ type: mongoose.Schema.Types.ObjectId}],
   tokens: [{
     access: {
       type: String,
@@ -43,7 +43,7 @@ UserSchema.methods.toJSON = function() {
 var user = this;
 var userObject = user.toObject();
 
-return _.pick(userObject,["_id","email","name"]);
+return _.pick(userObject,["_id","email","name","img"]);
 };
 
 

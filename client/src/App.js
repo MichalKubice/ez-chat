@@ -4,6 +4,7 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import { Provider } from "react-redux";
 import store from "./store";
 import Navbar from "./components/layout/Navbar";
+import Profile from "./components/layout/Profile";
 import Footer from "./components/layout/Footer";
 import Landing from "./components/layout/Landing";
 
@@ -14,7 +15,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import createRoom from "./components/rooms/createRoom";
 import getRooms from './components/rooms/getRooms';
 import joinRoom from './components/rooms/joinRoom';
-import Room from "./components/rooms/Room/Room";
+import Room from "./components/rooms/Room";
 
 //if(localStorage.jwtToken) {
 // setAuthToken(localStorage);
@@ -40,6 +41,7 @@ class App extends Component {
       <PrivateRoute exact path="/get-rooms" component={getRooms}/>
       <PrivateRoute exact path="/join-room" component={joinRoom}/>
       <PrivateRoute exact path="/profile/:id" component={Room}/>
+      <PrivateRoute exact path="/profile" component={Profile}/>
       </Switch>
       </div>
       <Footer />
