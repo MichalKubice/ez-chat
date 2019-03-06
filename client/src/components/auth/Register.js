@@ -53,7 +53,7 @@ class Register extends Component {
               <p className="lead text-center">Create your account</p>
               <form onSubmit={this.onSubmit}>
               <TextFieldGroup 
-            placeholder="name"
+            placeholder="Username"
             name="name"
             value={this.state.name}
             onChange={this.onChange}
@@ -68,7 +68,7 @@ class Register extends Component {
             error={errors.email}
             />
             <TextFieldGroup 
-            placeholder="password"
+            placeholder="Enter password"
             name="password"
             type="password"
             value={this.state.password}
@@ -76,7 +76,7 @@ class Register extends Component {
             error={errors.password}
             />
             <TextFieldGroup 
-            placeholder="password2"
+            placeholder="Enter password again"
             name="password2"
             type="password"
             value={this.state.password2}

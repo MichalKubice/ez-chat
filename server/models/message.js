@@ -15,7 +15,10 @@ var MessageSchema = new mongoose.Schema({
   },
   img: {
     type: String
+  }, time: {
+    type: String
   }
+  
 },
 {
   timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.

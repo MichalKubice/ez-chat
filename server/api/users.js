@@ -27,7 +27,7 @@ const fileFilter = (req,file,cb) => {
 const upload = multer({
   storage: storage, 
   limits: {
-  fileSize: 500 * 500 * 1
+  fileSize: 500 * 500 * 500
 },
 fileFilter: fileFilter
 });
@@ -48,7 +48,8 @@ router.post('/register', (req, res) => {
         email: req.body.email,
         password: req.body.password,
         rooms: [],
-        img: "uploads/default.png"
+        img: "uploads/default.png",
+        lastSeen: new Date().toLocaleTimeString()
       });
     
           user.save()
@@ -70,8 +71,8 @@ router.post('/login', (req,res) => {
     User.findByCredentials(body.email,body.password).then((user) => {
       return user.generateAuthToken()
       .then((result) => {
-          user.tokens = user.tokens.concat([result]);
-    
+          user.tokens = result
+          user.lastSeen = new Date().toLocaleTimeString();
           user.save()
           .then ((user) => res.header('x-auth', result.token).send(user))
       });

@@ -28,8 +28,10 @@ class Profile extends Component {
       
     }
   render() {
+    
     const { user } = this.props.auth;
-    const { data } = this.props.profile.profile
+    const { data } = this.props.profile.profile;
+    
     return (
         <div className="row">
         <div className="col-md-12">

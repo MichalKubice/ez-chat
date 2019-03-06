@@ -156,17 +156,14 @@ router.delete("/:id", authenticate, (req,res) => {
         res.send(room).status(200);
         User.findOneAndUpdate({_id:req.user._id},{ $pull: { rooms:  room._id}}, {new:true}).then((room) => {
           if (room) {
-            res.json(room).status(200);
+            console.log("succes.")
           } 
           else {
             
-            return res.status(400).json("fuckup");
+            return res.status(400).json();
           }
-      
-      
         }).catch((err) => {
-          res.send().status(401)
-          errors.password = "Failed."
+          console.log(err)
         })
   
       } else {
@@ -201,9 +198,9 @@ router.get("/:id", authenticate, (req,res) => {
       if(room){ 
       Message.find({
         conversationId:id
-      }).then((messages) => {
+      }).sort({time: -1}).then((messages) => {
         var mess = _.map(messages, function(currentObject) {
-          return _.pick(currentObject, "body", "author","createdAt", "img");
+          return _.pick(currentObject, "body", "author","createdAt", "img","time");
       });
         res.send(mess).status(200);
       }).catch((e) => {
@@ -238,11 +235,25 @@ router.post("/:id", authenticate, (req,res) => {
       
     }).then((room)=> {
       if (room) {
+        var d = new Date();
+var weekday = new Array(7);
+weekday[0] =  "Sunday";
+weekday[1] = "Monday";
+weekday[2] = "Tuesday";
+weekday[3] = "Wednesday";
+weekday[4] = "Thursday";
+weekday[5] = "Friday";
+weekday[6] = "Saturday";
+
+var n = weekday[d.getDay()];
+var t = new Date().toLocaleTimeString();
+
       const message = new Message({
         conversationId: id,
         body: req.body.body,
         author: req.user.name,
-        img: req.user.img
+        img: req.user.img,
+        time: `${n}, ${t}`
       });
         message.save().then((mess) => {
         res.send(mess).status(200);

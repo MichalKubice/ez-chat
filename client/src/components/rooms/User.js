@@ -9,6 +9,7 @@ class User extends Component {
         <div className="row">
           <div className="col-md-12">
           <h5 className="card-title">{userList.name}</h5>
+          Last login: {userList.lastSeen}
           </div>
           <div className="col-md-8"> 
           </div>

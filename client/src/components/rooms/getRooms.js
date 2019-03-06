@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import propTypes from "prop-types";
 import { showRoom } from "../../actions/roomActions";
 import RoomItem from "./RoomItem"
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 
 class getRooms extends Component {
     constructor(props){
@@ -11,6 +11,9 @@ class getRooms extends Component {
         this.state = {
             rooms: {}
         }
+    }
+    componentDidMount() {
+      this.props.showRoom();
     }
   render() {
       const { rooms } = this.props.rooms;

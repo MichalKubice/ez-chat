@@ -6,7 +6,6 @@ class MessageList extends Component {
   render() {
     const { messages } = this.props;
     const { userList} = this.props;
-    console.log(userList);
     let usr;
     if(userList.length > 0) {
       usr = userList.map(userList => (
@@ -19,7 +18,7 @@ class MessageList extends Component {
     let msg;
     if(messages.length > 0) {
       msg = messages.map(message => (
-        <Message key={message.createdAt} messages={message}/> 
+        <Message key={message._id} messages={message}/> 
       ))
 
     } else {

@@ -5,7 +5,6 @@ import { getCurrentProfile } from "../../actions/profileActions"
 import { Link } from "react-router-dom";
 import { showRoom } from "../../actions/roomActions";
 
-
 class Dashboard extends Component {
   componentDidMount() {
     this.props.getCurrentProfile();

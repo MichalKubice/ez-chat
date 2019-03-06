@@ -24,6 +24,9 @@ var UserSchema = new mongoose.Schema({
   }, img: {
     type: String
   },
+  lastSeen: {
+    type: String
+  },
   rooms: [{ type: mongoose.Schema.Types.ObjectId}],
   tokens: [{
     access: {
@@ -43,7 +46,7 @@ UserSchema.methods.toJSON = function() {
 var user = this;
 var userObject = user.toObject();
 
-return _.pick(userObject,["_id","email","name","img"]);
+return _.pick(userObject,["_id","email","name","img","lastSeen"]);
 };
 
 

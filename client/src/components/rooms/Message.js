@@ -13,7 +13,11 @@ class Message extends Component {
           </div>
           <div className="col-md-8">
             <p className="lead">{messages.body}</p> 
+            
           </div>
+          <div className="col-ml-2"> <p>{messages.time}</p></div>
+          
+          
     
         </div>
       </div>
