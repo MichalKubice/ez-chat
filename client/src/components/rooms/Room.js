@@ -27,6 +27,7 @@ class Room extends Component {
                   onClick: () => {
                       this.props.leaveRoom(this.props.match.params.id);
                       this.props.history.push("/get-rooms");
+                      this.props.showRoom();
                     }
                 },
                 {

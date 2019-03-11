@@ -44,7 +44,7 @@ class joinRoom extends Component {
             
           <form onSubmit={this.onSubmit}>
             <TextFieldGroup 
-            placeholder="room name"
+            placeholder="room id"
             name="id"
             value={this.state.id}
             onChange={this.onChange}

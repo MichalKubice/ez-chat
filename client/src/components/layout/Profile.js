@@ -16,6 +16,7 @@ class Profile extends Component {
     }
     fileUploadHandler = () => {
       const fd = new FormData();
+      if(this.state.selectedFile !== null) {
       fd.append("img",this.state.selectedFile,this.state.selectedFile.name)
       this.props.uploadImg(fd);
       setTimeout(
@@ -25,7 +26,7 @@ class Profile extends Component {
         .bind(this),
         1500
     );
-      
+      }
     }
   render() {
     
