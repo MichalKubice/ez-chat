@@ -7,7 +7,9 @@
     "client-install": "npm install --prefix client",
     "start": "nodemon server/server.js",
     "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run start\" \"npm run client\""
+    "dev": "concurrently \"npm run start\" \"npm run client\"",
+    "heroku-postbuild":  "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+
   },
   "engines": {
     "node": "10.14.2"
