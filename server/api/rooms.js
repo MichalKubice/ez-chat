@@ -198,7 +198,7 @@ router.get("/:id", authenticate, (req,res) => {
       if(room){ 
       Message.find({
         conversationId:id
-      }).sort({createdAt: -1}).then((messages) => {
+      }).sort({time: -1}).then((messages) => {
         var mess = _.map(messages, function(currentObject) {
           return _.pick(currentObject, "body", "author","createdAt", "img","time");
       });

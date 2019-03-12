@@ -18,7 +18,7 @@ class MessageList extends Component {
     let msg;
     if(messages.length > 0) {
       msg = messages.map(message => (
-        <Message key={message.createdAt} messages={message}/> 
+        <Message key={message._id} messages={message}/> 
       ))
 
     } else {

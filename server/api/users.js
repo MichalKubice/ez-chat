@@ -71,16 +71,8 @@ router.post('/login', (req,res) => {
     User.findByCredentials(body.email,body.password).then((user) => {
       return user.generateAuthToken()
       .then((result) => {
-        var dateObj = new Date();
-        var month = dateObj.getUTCMonth() + 1; //months from 1-12
-        var day = dateObj.getUTCDate();
-        var year = dateObj.getUTCFullYear();
-        var time = dateObj.toLocaleTimeString();
-        
-        
-        var newdate = day + "/" + month + "/" + year + ",    " + time
           user.tokens = result
-          user.lastSeen = newdate
+          user.lastSeen = new Date().toLocaleTimeString();
           user.save()
           .then ((user) => res.header('x-auth', result.token).send(user))
       });
