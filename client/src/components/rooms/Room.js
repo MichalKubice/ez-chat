@@ -27,6 +27,7 @@ class Room extends Component {
                   onClick: () => {
                       this.props.leaveRoom(this.props.match.params.id);
                       this.props.history.push("/get-rooms");
+                      this.props.showRoom();
                     }
                 },
                 {
@@ -79,7 +80,7 @@ class Room extends Component {
           <div className="col-md-6"> 
           <Link to="/get-rooms" className="btn btn-light mb-3 float-left">Back</Link>
           <button onClick={this.leaveRoom.bind(this)} className="btn btn-light ml-3 float-left">Leave</button>
-          <button onClick={this.refreshPage.bind(this)} className="btn btn-light ml-3 float-left"> Refresh</button>
+          <button onClick={this.refreshPage.bind(this)} className="btn btn-light ml-3 float-left"> Get new messages</button>
           
           <p className="col bg-warning ml-3 float-left">ID : {this.props.match.params.id} </p>
           

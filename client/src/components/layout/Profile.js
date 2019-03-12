@@ -15,6 +15,9 @@ class Profile extends Component {
         })
     }
     fileUploadHandler = () => {
+      if(this.state.selectedFile !== null) {
+
+      
       const fd = new FormData();
       fd.append("img",this.state.selectedFile,this.state.selectedFile.name)
       this.props.uploadImg(fd);
@@ -25,6 +28,7 @@ class Profile extends Component {
         .bind(this),
         1500
     );
+  }
       
     }
   render() {
