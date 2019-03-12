@@ -25,7 +25,6 @@
   "bugs": {
     "url": "https://github.com/MichalKubice/ez-chat/issues"
   },
-  "homepage": "https://github.com/MichalKubice/ez-chat#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
