@@ -1,7 +1,6 @@
 const Validator = require("validator");
 
 const isEmpty = require("./is-empty") ;
-const {ObjectID} = require("mongodb");
 
 module.exports = function validateJoinInput(data) {
     let errors = {};

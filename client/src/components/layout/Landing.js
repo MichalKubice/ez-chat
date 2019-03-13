@@ -17,6 +17,9 @@ class Landing extends Component {
             <div className="row">
               <div className="col-md-12 text-center">
                 <p className="lead"> Keep chatting simple.</p>
+                <p className="lead"> - create account</p>
+                <p className="lead"> - create room and share ID with friends</p>
+                <p className="lead"> - join existing room</p>
                 <hr />
                 <Link to="/register" className="btn btn-lg btn-info mr-2">Sign Up</Link>
                 <Link to="/login" className="btn btn-lg btn-light">Login</Link>
