@@ -4,32 +4,25 @@ const validateLoginInput = require("../validation/login");
 const {ObjectID} = require("mongodb");
 const _ = require("lodash");
 const multer = require("multer");
-
+const cloudinaryStorage = require("multer-storage-cloudinary");
 const {User} = require("../models/user");
 const {authenticate} = require("../middleware/authenticate");
 const validateRegisterInput = require("../validation/register");
-const storage = multer.diskStorage({
-  destination: function(req,file,cb) {
-    cb(null,"./uploads/");
-  },
-  filename: function(req,file,cb) {
-    cb(null, Date.now() + file.originalname)
-  }
-});
-const fileFilter = (req,file,cb) => {
-  if(file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-    cb(null,true)
-  } else {
-    cb(null,false);
-  }
-  
-}
+var cloudinary = require('cloudinary');
+cloudinary.config({ 
+  cloud_name: 'dkenkifof', 
+  api_key: '116539263376782', 
+  api_secret: 'eNuKaiMYWnfvF5eHB62IJJ3LxVk' 
+  });
+  const storage = cloudinaryStorage({
+    cloudinary: cloudinary,
+    folder: "demo",
+    allowedFormats: ["jpg", "png"],
+    transformation: [{ width: 500, height: 500, crop: "limit" }]
+    });
+
 const upload = multer({
-  storage: storage, 
-  limits: {
-  fileSize: 500 * 500 * 500
-},
-fileFilter: fileFilter
+  storage: storage
 });
 
 // SAVE USER INTO DB
@@ -91,13 +84,15 @@ router.post('/login', (req,res) => {
   });
   //IMG
 
-  router.put("/img", authenticate, upload.single("img"), (req,res) => {
+  router.put("/img", authenticate, upload.single("file"), (req,res) => {
+  const image = {};
+  image.url = req.file.url;
+  image.id = req.file.public_id;
     if(req.file){
-
-    
-    User.findOneAndUpdate({_id:req.user._id},{ $set: { img: req.file.path }}, {new:true}).then((user) => {
+    User.findOneAndUpdate({_id:req.user._id},{ $set: { img: image.url }}, {new:true}).then((user) => {
       res.send(user)
     }).catch((err) => {
+
       res.status(404).send();
     })
   } else {

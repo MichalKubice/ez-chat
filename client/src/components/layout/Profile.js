@@ -9,7 +9,6 @@ class Profile extends Component {
     selectedFile: null
   }
     fileSelectHandler = event => {
-        console.log(event.target.files[0]);
         this.setState({
           selectedFile: event.target.files[0]
         })
@@ -19,14 +18,14 @@ class Profile extends Component {
 
       
       const fd = new FormData();
-      fd.append("img",this.state.selectedFile,this.state.selectedFile.name)
+      fd.append("file",this.state.selectedFile,this.state.selectedFile.name)
       this.props.uploadImg(fd);
       setTimeout(
         function() {
           this.props.getCurrentProfile();
         }
         .bind(this),
-        1500
+        5000
     );
   }
       
