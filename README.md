@@ -1,4 +1,5 @@
 # ez-chat
+Heroku: https://stormy-bayou-11803.herokuapp.com/
 easy and clear chat app based on rooms.
 - install node js
 - clone repo 
